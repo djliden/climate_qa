@@ -164,3 +164,6 @@ notes.org
 
 # stored documents
 stored_documents/
+
+# testing notebook
+interactive_tests.ipynb
