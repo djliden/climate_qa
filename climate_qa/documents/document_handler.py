@@ -10,6 +10,8 @@ import tempfile
 import os
 from sentence_transformers import SentenceTransformer
 import json
+from typing import Union
+from .document import Document
 
 
 class DocumentHandler:
@@ -22,10 +24,10 @@ class DocumentHandler:
     instantiation.
     """
 
-    def __init__(self, document):
+    def __init__(self, document: Document):
         """
         Initializes the DocumentHandler with a specific document object.
-        
+
         Parameters:
         document (object): An instance of a Document class (like IPCCDocument,
                            UNFCCCDocument, etc.) which defines how to download
@@ -33,7 +35,7 @@ class DocumentHandler:
         """
         self.document = document
 
-    def download(self):
+    def download(self) -> None:
         """
         Download the document from the url specified in the document object
         """
@@ -42,8 +44,9 @@ class DocumentHandler:
         with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tf:
             tf.write(response.content)
             # sets document.filepath
-            self.document.filepath = tf.name        
-    def extract_text(self):
+            self.document.filepath = tf.name
+
+    def extract_text(self) -> None:
         """
         Extract text from the document using the method defined in the document
         object. Returns a list of sections from which we can then generate
@@ -54,21 +57,32 @@ class DocumentHandler:
         finally:
             os.remove(self.document.filepath)
 
-    def generate_embeddings(self, model='msmarco-distilroberta-base-v4'):
+    def generate_embeddings(self, model: str = "msmarco-distilroberta-base-v2") -> None:
         """
-        Generate embeddings for the document text. 
+        Generate embeddings for the document text.
         """
         model = SentenceTransformer(model)
         self.embeddings = model.encode(self.processed_sections)
 
-    def store_document(self, dir_path=None):
+    def store_document(self, dir_path: Union[str, None] = None) -> None:
+        """
+        Store the document sections, embeddings, and metadata as a
+        JSON file.
+
+        Parameters:
+        dir_path (str): directory where the JSON file should be saved.
+                        default to project root directory.
+        """
+
         data = []
         for i in range(len(self.processed_sections)):
-            d = {"title": self.document.title,
-                 "date": self.document.date,
-                 "url": self.document.url,
-                 "text": self.processed_sections[i],
-                 "embedding": self.embeddings[i].tolist()}
+            d = {
+                "title": self.document.title,
+                "date": self.document.date,
+                "url": self.document.url,
+                "text": self.processed_sections[i],
+                "embedding": self.embeddings[i].tolist(),
+            }
             data.append(d)
 
         # save documents
@@ -76,8 +90,8 @@ class DocumentHandler:
 
         if dir_path is None:
             dir_path = project_root
-            
-        stored_documents_path = os.path.join(dir_path, 'stored_documents')
+
+        stored_documents_path = os.path.join(dir_path, "stored_documents")
 
         # Check if the directory exists, if not create one
         if not os.path.exists(stored_documents_path):
@@ -85,9 +99,9 @@ class DocumentHandler:
 
         # Define the filename. Here we are using the title of the document.
         # In real scenario, you might want to use unique identifiers.
-        file_name = f'{self.document.filename}.json'
+        file_name = f"{self.document.filename}.json"
         file_path = os.path.join(stored_documents_path, file_name)
 
         # Write the data to a json file
-        with open(file_path, 'w') as f:
+        with open(file_path, "w") as f:
             json.dump(data, f)
