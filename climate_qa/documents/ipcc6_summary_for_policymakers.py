@@ -102,3 +102,12 @@ class IPCC6SummaryForPolicymakersDocument(Document):
 
         for p in reader.pages:
             text = p.extract_text().split("\n")
+            # delete header content
+            del text[:3]
+            extracted_pages.append('\n'.join(text))
+
+        joined_text = '\n'.join(extracted_pages)   
+        sections = self.extract_text_by_section(joined_text)
+        processed_sections = self.process_extracted_sections(sections)
+
+        return processed_sections

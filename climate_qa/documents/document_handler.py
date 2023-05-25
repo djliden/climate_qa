@@ -5,6 +5,9 @@ This module contains the DocumentHandler class which is responsible for managing
 the lifecycle of a document. The DocumentHandler utilizes strategy pattern to
 allow for different handling of different document types.
 """
+#import sys
+#sys.path.append("../")
+from re import error
 import requests
 import tempfile
 import os
@@ -12,6 +15,7 @@ from sentence_transformers import SentenceTransformer
 import json
 from typing import Union
 from .document import Document
+from ..utils import EmbeddingGenerator
 
 
 class DocumentHandler:
@@ -34,6 +38,7 @@ class DocumentHandler:
                            and extract text from a specific type of document.
         """
         self.document = document
+        self.embedding_generator = EmbeddingGenerator()
 
     def download(self) -> None:
         """
@@ -45,6 +50,7 @@ class DocumentHandler:
             tf.write(response.content)
             # sets document.filepath
             self.document.filepath = tf.name
+            
 
     def extract_text(self) -> None:
         """
@@ -57,12 +63,11 @@ class DocumentHandler:
         finally:
             os.remove(self.document.filepath)
 
-    def generate_embeddings(self, model: str = "msmarco-distilroberta-base-v2") -> None:
+    def generate_embeddings(self) -> None:
         """
         Generate embeddings for the document text.
         """
-        model = SentenceTransformer(model)
-        self.embeddings = model.encode(self.processed_sections)
+        self.embeddings = self.embedding_generator.generate_embeddings(self.processed_sections)
 
     def store_document(self, dir_path: Union[str, None] = None) -> None:
         """
@@ -82,6 +87,7 @@ class DocumentHandler:
                 "url": self.document.url,
                 "text": self.processed_sections[i],
                 "embedding": self.embeddings[i].tolist(),
+                "embedding_model": self.embedding_generator.model_name
             }
             data.append(d)
 
