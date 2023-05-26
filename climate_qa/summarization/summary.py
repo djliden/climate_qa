@@ -21,7 +21,7 @@ class Summarizer:
     in <thinking> tags. Additionally make note of the source and date of each excerpt,
     and note whether there are any changes across time or disagreements between sources.
     Do not repeat large portions of the text from each excerpt, and do not include new
-    <excerpt> tags.
+    <excerpt> tags. The <thinking> section MUST be very short.
 
     Next, return a short answer to the <prompt> in <response> tags. Here are some rules
     your response must follow:
@@ -34,10 +34,9 @@ class Summarizer:
     - Recommend the most relevant source as further reading.
     """)
     
-    def __init__(self, excerpts: pd.DataFrame, prompt: str):
+    def __init__(self, excerpts: pd.DataFrame):
         self.excerpts = excerpts
         self.processed_excerpts = self._preprocess_excerpts()
-        self.prompt = prompt
 
     def _preprocess_excerpts(self) -> str:
         """processes document excerpts into a string representation with
@@ -54,10 +53,10 @@ text: {r.text}
         return '\n'.join(processed_excerpts_list)
     
 
-    def summarize(self) -> str:
-        prompt = self.summary_prompt(excerpts = self.processed_excerpts, user_prompt = self.prompt)
+    def summarize(self, prompt, stream:bool = False) -> str:
+        prompt = self.summary_prompt(excerpts = self.processed_excerpts, user_prompt = prompt)
         try:
-            return generate_summary(prompt, stream=True)
+            return generate_summary(prompt, stream=stream)
         except RateLimitError as e:
             print("Rate limit exceeded. Please try again.")
             return ""            
