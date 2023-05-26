@@ -15,7 +15,8 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    python_requires='>=3.6',  # Update with your project's Python version requirement
-    install_requires=[
+    python_requires='>=3.9',  # Update with your project's Python version requirement
+    install_requires=["numpy", "openai", "pandas", "pypdf", "requests",
+                      "sentence_transformers", "setuptools",
     ],
 )
