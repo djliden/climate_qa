@@ -1,6 +1,7 @@
 import argparse
-from climate_qa import DocumentHandler, IPCC6SummaryForPolicymakersDocument
 import os
+
+from climate_qa import DocumentHandler, IPCC6SummaryForPolicymakersDocument
 
 # import other document types
 

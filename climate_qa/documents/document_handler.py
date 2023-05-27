@@ -5,17 +5,19 @@ This module contains the DocumentHandler class which is responsible for managing
 the lifecycle of a document. The DocumentHandler utilizes strategy pattern to
 allow for different handling of different document types.
 """
+import json
+import os
+import tempfile
 #import sys
 #sys.path.append("../")
 from re import error
-import requests
-import tempfile
-import os
-from sentence_transformers import SentenceTransformer
-import json
 from typing import Union
-from .document import Document
+
+import requests
+from sentence_transformers import SentenceTransformer
+
 from ..utils import EmbeddingGenerator
+from .document import Document
 
 
 class DocumentHandler:

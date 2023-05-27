@@ -1,8 +1,10 @@
-import pandas as pd
-import numpy as np
 import json
-from typing import List, Dict, Optional
 import os
+from typing import Dict, List, Optional
+
+import numpy as np
+import pandas as pd
+
 from ..utils import EmbeddingGenerator, cosine_similarity
 
 

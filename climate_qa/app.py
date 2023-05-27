@@ -1,8 +1,11 @@
-import streamlit as st
-from climate_qa.summarization.summary import Summarizer
-from climate_qa.search import DocumentSearch
-import pandas as pd
 import re
+
+import pandas as pd
+import streamlit as st
+
+from climate_qa.search import DocumentSearch
+from climate_qa.summarization.summary import Summarizer
+
 
 @st.cache_resource
 def load_data():

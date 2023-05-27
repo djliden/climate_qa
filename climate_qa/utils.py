@@ -1,11 +1,13 @@
-from numpy.linalg import norm
-from sentence_transformers import SentenceTransformer
-from typing import List
-import numpy as np
-import openai
 import os
 import re
+from typing import List
+
+import numpy as np
+import openai
 from dotenv import load_dotenv
+from numpy.linalg import norm
+from sentence_transformers import SentenceTransformer
+
 load_dotenv()
 
 

@@ -1,37 +1,28 @@
-from openai.error import RateLimitError
-from ..utils import PromptTemplate, generate_summary
 import pandas as pd
+from openai.error import RateLimitError
+
+from ..utils import PromptTemplate, generate_summary
+
 
 class Summarizer:
 
-    summary_prompt = PromptTemplate("""Here is a set of one or more exceprts about a
-    topic in climate change:
-
+    summary_prompt = PromptTemplate("""
     <excerpts>
     {excerpts}
     </excerpts>
 
-    Your task is to answer the following question or prompt based on those excerpts:
+    Based on these documents, please:
 
-    <prompt>
+    1. Briefly extract the main points in <thinking> tags. Note sources, dates, changes over time, and disagreements. Keep this very short and do not repeat large text portions.
+
+    2. Answer the following question in <response> tags:
     {user_prompt}
-    </prompt>
 
-    Begin by very briefly extracting the main point(s) from each excerpt, demarcating this process
-    in <thinking> tags. Additionally make note of the source and date of each excerpt,
-    and note whether there are any changes across time or disagreements between sources.
-    Do not repeat large portions of the text from each excerpt, and do not include new
-    <excerpt> tags. The <thinking> section MUST be very short.
-
-    Next, return a short answer to the <prompt> in <response> tags. Here are some rules
-    your response must follow:
-    - Do not refer to "the excerpts." I.e. say 'according to <report>, ...." not "according
-      to the excerpt, ..."
-    - If there were any disagreements between sources, note them in the response
-    - If there were any changes over time, note them in the response
-    - If the excertps mentioned any uncertainties relevant to the prompt/question,
-      note them in the response.
-    - Recommend the most relevant source as further reading.
+    Rules for the response:
+    - Refer directly to the source, not as 'the excerpts.'
+    - Highlight any disagreements or changes over time.
+    - Mention relevant uncertainties.
+    - Recommend the most relevant source for further reading.
     """)
     
     def __init__(self, excerpts: pd.DataFrame):
@@ -59,4 +50,4 @@ text: {r.text}
             return generate_summary(prompt, stream=stream)
         except RateLimitError as e:
             print("Rate limit exceeded. Please try again.")
-            return ""            
+            return ""

@@ -6,9 +6,11 @@ The document can be read and downloaded from the following url:
 https://www.ipcc.ch/report/ar6/wg2/chapter/summary-for-policymakers/
 """
 
-from pypdf import PdfReader
-import requests
 import re
+
+import requests
+from pypdf import PdfReader
+
 from .document import Document
 
 
