@@ -17,6 +17,7 @@ setup(
     ],
     python_requires='>=3.9',  # Update with your project's Python version requirement
     install_requires=["numpy", "openai", "pandas", "pypdf", "requests",
-                      "sentence_transformers", "setuptools",
+                      "sentence_transformers", "setuptools", "streamlit",
+                      "python-dotenv",
     ],
 )
