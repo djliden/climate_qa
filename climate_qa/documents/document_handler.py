@@ -111,3 +111,18 @@ class DocumentHandler:
         # Write the data to a json file
         with open(file_path, "w") as f:
             json.dump(data, f)
+
+    def process_document(self, dir_path: Union[str, None] = None) -> None:
+        """
+        Full processing of the document. Downloads the document, extracts text,
+        generates embeddings, and stores the document.
+
+        Parameters:
+        dir_path (str): directory where the JSON file should be saved.
+                        default to project root directory.
+        """
+        self.download()
+        self.extract_text()
+        self.generate_embeddings()
+        self.store_document(dir_path)
+
